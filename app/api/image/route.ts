@@ -6,7 +6,7 @@ export async function POST(req: Request) {
     try {
         await dbConnect()
         const body = await req.json()
-        const { name, url  } = body
+        const { name, url } = body
         
         // Validate required fields
         if (!name || !url ) {
@@ -32,11 +32,10 @@ export async function GET() {
         return NextResponse.json({ error: 'Server error' }, { status: 500 })
     }
 }
-export async function DELETE(req: Request) {
+export async function DELETE(req: Request , id : string) {
     try {
         await dbConnect()
-        const { searchParams } = new URL(req.url)
-        const id = searchParams.get('id')
+        
         if (!id) {
             return NextResponse.json({ error: 'Missing image ID' }, { status: 400 })
         }
