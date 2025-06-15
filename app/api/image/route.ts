@@ -32,9 +32,10 @@ export async function GET() {
         return NextResponse.json({ error: 'Server error' }, { status: 500 })
     }
 }
-export async function DELETE(req: Request , id : string) {
+export async function DELETE(req: Request) {
     try {
         await dbConnect()
+        const { id }= await req.json()
         
         if (!id) {
             return NextResponse.json({ error: 'Missing image ID' }, { status: 400 })

@@ -1,29 +1,45 @@
 "use client"
 
+import type React from "react"
 
 import UploadArea from "../components/upload-area"
 import ImageCard from "../components/image-card"
+import type { ImageFile } from "../types/types"
 
-import { useState } from "react"
-import { ImageFile } from "../types/types"
+import { useState, useEffect } from "react"
+import { getImages, deleteImage } from "@/utils/api-calls";
 
 export default function UploadGallery() {
-    const [images, setImages] = useState<ImageFile[]>([
-        { _id: "1", name: "beach-sunset.jpg", url: "/placeholder.svg?height=200&width=300" },
-        { _id: "2", name: "mountain-view.jpg", url: "/placeholder.svg?height=200&width=300" },
-        { _id: "3", name: "city-skyline.jpg", url: "/placeholder.svg?height=200&width=300" },
-        { _id: "4", name: "forest-path.jpg", url: "/placeholder.svg?height=200&width=300" },
-    ])
+    const [images, setImages] = useState<ImageFile[]>([])
+    const [showGallery, setShowGallery] = useState(false)
 
-    const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-        // This would normally process the files, but we're just showing the UI
-        console.log("Files selected:", e.target.files)
-        // Add placeholder logic here
-    }
+    useEffect(() => {
+        const fetchImages = async () => {
+            try {
+                const { images: fetchedImages } = await getImages();
+                setImages(fetchedImages);
+                setShowGallery(fetchedImages.length > 0);
+            } catch (error) {
+                console.error("Error fetching images:", error);
+            }
+        };
 
-    const handleRemove = (id: string) => {
-        setImages(images.filter((image) => image._id !== id))
+        fetchImages();
+    },[]);
+
+const handleRemove = async (id: string) => {
+    try {
+        await deleteImage(id);
+        setImages((prev) => {
+            const updated = prev.filter((image) => image._id !== id);
+            setShowGallery(updated.length > 0);
+            return updated;
+        });
+        console.log("Image deleted successfully");
+    } catch (error) {
+        console.error("Error deleting image:", error);
     }
+};
 
     return (
         <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -32,9 +48,19 @@ export default function UploadGallery() {
                     <h1 className="text-3xl font-bold text-gray-900 sm:text-4xl mb-8">Uploads Gallery</h1>
                 </div>
 
-                <UploadArea onUpload={handleUpload} />
+                <div className={`h-40 text-black grid place-items-center`}>
+                    <UploadArea />
+                </div>
 
-                <div className="mt-10">
+                <div className="text-center mt-8">
+                    <h1 className="text-3xl font-bold text-gray-900 sm:text-4xl mb-8"> Gallery</h1>
+                </div>
+
+
+                <div
+                    className={`transition-all duration-500 ease-in-out overflow-hidden ${showGallery ? "max-h-auto opacity-100 mt-10" : "max-h-0 opacity-0 mt-0"
+                        }`}
+                >
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                         {images.map((image) => (
                             <ImageCard key={image._id} image={image} onRemove={() => handleRemove(image._id)} showName={true} />
@@ -45,4 +71,5 @@ export default function UploadGallery() {
         </div>
     )
 }
+
 
