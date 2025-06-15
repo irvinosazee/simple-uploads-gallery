@@ -1,6 +1,6 @@
 // Types
 export type ImageFile = {
-    id: string
+    _id: string
     name: string
     url: string
 }

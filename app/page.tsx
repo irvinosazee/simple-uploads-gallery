@@ -5,21 +5,14 @@ import UploadArea from "../components/upload-area"
 import ImageCard from "../components/image-card"
 
 import { useState } from "react"
-
-// Types
-type ImageFile = {
-    id: string
-    name: string
-    url: string
-}
-
+import { ImageFile } from "../types/types"
 
 export default function UploadGallery() {
     const [images, setImages] = useState<ImageFile[]>([
-        { id: "1", name: "beach-sunset.jpg", url: "/placeholder.svg?height=200&width=300" },
-        { id: "2", name: "mountain-view.jpg", url: "/placeholder.svg?height=200&width=300" },
-        { id: "3", name: "city-skyline.jpg", url: "/placeholder.svg?height=200&width=300" },
-        { id: "4", name: "forest-path.jpg", url: "/placeholder.svg?height=200&width=300" },
+        { _id: "1", name: "beach-sunset.jpg", url: "/placeholder.svg?height=200&width=300" },
+        { _id: "2", name: "mountain-view.jpg", url: "/placeholder.svg?height=200&width=300" },
+        { _id: "3", name: "city-skyline.jpg", url: "/placeholder.svg?height=200&width=300" },
+        { _id: "4", name: "forest-path.jpg", url: "/placeholder.svg?height=200&width=300" },
     ])
 
     const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -29,7 +22,7 @@ export default function UploadGallery() {
     }
 
     const handleRemove = (id: string) => {
-        setImages(images.filter((image) => image.id !== id))
+        setImages(images.filter((image) => image._id !== id))
     }
 
     return (
@@ -44,7 +37,7 @@ export default function UploadGallery() {
                 <div className="mt-10">
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                         {images.map((image) => (
-                            <ImageCard key={image.id} image={image} onRemove={() => handleRemove(image.id)} showName={true} />
+                            <ImageCard key={image._id} image={image} onRemove={() => handleRemove(image._id)} showName={true} />
                         ))}
                     </div>
                 </div>
