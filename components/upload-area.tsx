@@ -9,7 +9,7 @@ export default function Home() {
             <UploadButton
                 endpoint="imageUploader"
                 onClientUploadComplete={(res) => {
-                    saveMetadata(res[0]);
+                    res.forEach((file) => saveMetadata(file));
                     console.log("Files: ", res);
                     alert("Upload Completed");
                 }}

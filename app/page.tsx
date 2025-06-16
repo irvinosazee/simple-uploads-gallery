@@ -29,13 +29,17 @@ export default function UploadGallery() {
 
 const handleRemove = async (id: string) => {
     try {
-        await deleteImage(id);
-        setImages((prev) => {
-            const updated = prev.filter((image) => image._id !== id);
-            setShowGallery(updated.length > 0);
-            return updated;
-        });
-        console.log("Image deleted successfully");
+        const deleted = await deleteImage(id);
+        if (deleted) {
+            setImages((prev) => {
+                const updated = prev.filter((image) => image._id !== id);
+                setShowGallery(updated.length > 0);
+                return updated;
+            });
+            console.log("Image deleted successfully");
+        } else {
+            console.error("Failed to delete image");
+        }
     } catch (error) {
         console.error("Error deleting image:", error);
     }
